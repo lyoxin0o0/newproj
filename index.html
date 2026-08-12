@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 專題展示站</title>
+    <style>
+      :root {
+        --bg-deep: #071a2d;
+        --bg-mid: #0b2540;
+        --panel: rgba(18, 39, 66, 0.78);
+        --panel-strong: rgba(10, 26, 44, 0.9);
+        --primary: #4cc9f0;
+        --primary-strong: #00a8ff;
+        --primary-soft: #9ad8ff;
+        --cyan: #7bdff2;
+        --text: #eaf7ff;
+        --muted: #a7ccdf;
+        --line: rgba(148, 202, 255, 0.2);
+        --accent: #6ee7ff;
+        --shadow: 0 20px 50px rgba(0, 162, 255, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(71, 183, 255, 0.22), transparent 28%),
+          radial-gradient(circle at 80% 20%, rgba(123, 223, 242, 0.12), transparent 25%),
+          linear-gradient(135deg, var(--bg-deep), var(--bg-mid) 45%, #112f4e 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(14px);
+        background: rgba(7, 26, 45, 0.6);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        box-shadow: var(--shadow);
+        font-size: 1.1rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 22px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        color: #041a2f;
+        font-weight: 700;
+        box-shadow: 0 12px 25px rgba(76, 201, 240, 0.35);
+      }
+
+      .hero {
+        padding: 90px 0 60px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 14px;
+        border: 1px solid rgba(123, 223, 242, 0.38);
+        border-radius: 999px;
+        color: var(--accent);
+        background: rgba(17, 58, 84, 0.4);
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        margin: 22px 0 18px;
+        font-size: clamp(2.7rem, 6vw, 4.8rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+
+      .highlight {
+        background: linear-gradient(135deg, var(--primary-soft), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero p {
+        max-width: 620px;
+        color: var(--muted);
+        line-height: 1.8;
+        font-size: 1.05rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      .secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 22px;
+        border-radius: 999px;
+        border: 1px solid rgba(123, 223, 242, 0.32);
+        color: var(--text);
+        background: rgba(9, 30, 45, 0.35);
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(110px, 1fr));
+        gap: 18px;
+        margin-top: 34px;
+      }
+
+      .metric {
+        padding: 20px 16px;
+        background: rgba(8, 26, 44, 0.55);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: clamp(1.3rem, 3vw, 2rem);
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .display-panel {
+        position: relative;
+        padding: 22px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(13, 38, 61, 0.92), rgba(8, 25, 42, 0.92));
+        border: 1px solid rgba(133, 196, 255, 0.18);
+        box-shadow: var(--shadow);
+      }
+
+      .window-bar {
+        display: flex;
+        gap: 8px;
+        padding-bottom: 18px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .dot:nth-child(1) { background: #ff5f57; }
+      .dot:nth-child(2) { background: #febc2e; }
+      .dot:nth-child(3) { background: #28c840; }
+
+      .dashboard {
+        padding: 16px 14px 10px;
+        border-radius: 20px;
+        background: rgba(15, 36, 58, 0.9);
+        border: 1px solid rgba(127, 190, 255, 0.15);
+      }
+
+      .chart {
+        height: 200px;
+        position: relative;
+        border-radius: 16px;
+        background:
+          linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+          rgba(6, 22, 36, 0.8);
+        background-size: 25px 25px, 25px 25px, auto;
+        overflow: hidden;
+      }
+
+      .line {
+        position: absolute;
+        inset: 20px 18px 20px 18px;
+      }
+
+      .line svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .bars {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+        align-items: end;
+        height: 90px;
+      }
+
+      .bar {
+        border-radius: 12px 12px 0 0;
+        background: linear-gradient(180deg, var(--primary-soft), var(--primary-strong));
+        opacity: 0.9;
+      }
+
+      section {
+        padding: 35px 0 20px;
+      }
+
+      .section-title {
+        margin-bottom: 26px;
+      }
+
+      .section-title h2 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        margin: 0 0 8px;
+      }
+
+      .section-title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        background: rgba(14, 38, 60, 0.7);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 26px 22px;
+        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(0, 168, 255, 0.18));
+        border: 1px solid rgba(123, 223, 242, 0.2);
+        font-size: 1.5rem;
+      }
+
+      .card h3 {
+        margin: 18px 0 10px;
+        font-size: 1.25rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 22px;
+      }
+
+      .step {
+        position: relative;
+        background: rgba(14, 38, 60, 0.7);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 24px 22px 20px;
+      }
+
+      .step-number {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        color: #08223a;
+        font-weight: 800;
+      }
+
+      .step h3 {
+        margin: 18px 0 10px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .tag {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(14, 38, 60, 0.9);
+        border: 1px solid rgba(123, 223, 242, 0.2);
+        color: var(--primary-soft);
+      }
+
+      .cta-panel {
+        margin: 44px 0 80px;
+        padding: 28px 26px;
+        border-radius: 24px;
+        border: 1px solid rgba(123, 223, 242, 0.2);
+        background: linear-gradient(135deg, rgba(10, 31, 52, 0.9), rgba(16, 45, 70, 0.9));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .cta-panel h3 {
+        margin: 0 0 6px;
+        font-size: clamp(1.4rem, 2.8vw, 2rem);
+      }
+
+      .cta-panel p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      footer {
+        padding: 0 0 40px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 860px) {
+        .hero-grid,
+        .features,
+        .timeline {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 60px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <span>Python Project</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#about">簡介</a>
+          <a href="#features">功能</a>
+          <a href="#process">流程</a>
+          <a href="#tech">技術</a>
+        </nav>
+        <a class="cta" href="#about">開始了解</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">AI × DATA × PYTHON</span>
+            <h1>
+              讓 <span class="highlight">Python</span><br />
+              成為專題亮點
+            </h1>
+            <p>
+              本專題以資料分析、機器學習與自動化應用為核心，整合前端展示與後端模型，
+              讓程式不只執行，也能清楚呈現成果與價值。
+            </p>
+            <div class="hero-actions">
+              <a class="cta" href="#features">查看功能</a>
+              <a class="secondary" href="#process">專題流程</a>
+            </div>
+            <div class="metrics">
+              <div class="metric">
+                <strong>5+</strong>
+                <span>核心模組</span>
+              </div>
+              <div class="metric">
+                <strong>80%</strong>
+                <span>自動化流程</span>
+              </div>
+              <div class="metric">
+                <strong>24/7</strong>
+                <span>即時分析</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="display-panel" aria-label="專題儀表板展示">
+            <div class="window-bar">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <div class="dashboard">
+              <div class="chart">
+                <div class="line">
+                  <svg viewBox="0 0 400 160" preserveAspectRatio="none" aria-label="成長圖表">
+                    <defs>
+                      <linearGradient id="lineGradient" x1="0" x2="1">
+                        <stop offset="0%" stop-color="#7bdff2" />
+                        <stop offset="100%" stop-color="#00a8ff" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M0,130 C60,120, 80,75, 120,88 S200,20, 250,60 S330,70, 400,25" fill="none" stroke="url(#lineGradient)" stroke-width="4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bars">
+                <div class="bar" style="height: 38%"></div>
+                <div class="bar" style="height: 58%"></div>
+                <div class="bar" style="height: 70%"></div>
+                <div class="bar" style="height: 80%"></div>
+                <div class="bar" style="height: 96%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="container">
+          <div class="section-title">
+            <h2>專題定位</h2>
+            <p>結合資料處理、模型建模與視覺化呈現，打造具實務價值的 Python 專題作品。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <div class="section-title">
+            <h2>核心功能</h2>
+            <p>從需求分析到成果展示，完整涵蓋整個專題流程。</p>
+          </div>
+
+          <div class="features">
+            <article class="card">
+              <div class="icon">📊</div>
+              <h3>數據分析</h3>
+              <p>以 Pandas、NumPy 為核心，進行資料清洗、統計分析與數據視覺化，快速掌握趨勢與異常。</p>
+            </article>
+
+            <article class="card">
+              <div class="icon">🧠</div>
+              <h3>機器學習</h3>
+              <p>利用 Scikit-learn 建立分類與預測模型，透過評估指標驗證準確率與模型效益。</p>
+            </article>
+
+            <article class="card">
+              <div class="icon">⚙️</div>
+              <h3>自動化應用</h3>
+              <p>整合資料抓取、處理與報表生成，減少重複人工操作，提升效率與專題可展現性。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="process">
+        <div class="container">
+          <div class="section-title">
+            <h2>實作流程</h2>
+            <p>從問題定義到成果發表，一步步建構完整專題價值。</p>
+          </div>
+
+          <div class="timeline">
+            <div class="step">
+              <div class="step-number">01</div>
+              <h3>需求定義</h3>
+              <p>確認專題主題、問題背景與目標，確立分析方向與預期成效。</p>
+            </div>
+            <div class="step">
+              <div class="step-number">02</div>
+              <h3>資料建模</h3>
+              <p>蒐集資料、清理異常值、進行特徵工程與模型訓練，提升分析深度。</p>
+            </div>
+            <div class="step">
+              <div class="step-number">03</div>
+              <h3>成果展示</h3>
+              <p>結合前端頁面與視覺化報告，讓作品成果更直觀、專業且易於介紹。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tech">
+        <div class="container">
+          <div class="section-title">
+            <h2>技術堆疊</h2>
+            <p>使用 Python 生態系統打造穩定、可擴充的專題架構。</p>
+          </div>
+
+          <div class="card">
+            <div class="tech-stack">
+              <span class="tag">Python</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">NumPy</span>
+              <span class="tag">Matplotlib</span>
+              <span class="tag">Scikit-learn</span>
+              <span class="tag">Flask</span>
+              <span class="tag">HTML5</span>
+              <span class="tag">CSS3</span>
+              <span class="tag">JavaScript</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container">
+        <div class="cta-panel">
+          <div>
+            <h3>打造一個具專業感的 Python 專題網站</h3>
+            <p>清晰的資訊架構、科技感藍色設計，讓作品更有說服力。</p>
+          </div>
+          <a class="cta" href="#top">立即查看</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      © 2026 Python 專題展示站 · Designed for smart data solutions
+    </footer>
+  </body>
+</html>
